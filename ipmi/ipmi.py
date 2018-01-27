@@ -45,7 +45,24 @@ class IPMI:
 				print "Cant login"
 		except requests.exceptions.RequestException as e:
 			print "Connection error", e
-	
+
+	def get_data(self):
+		if not self.conn:
+			print "Not connected"
+			return
+		now = datetime.datetime.now()
+		tstamp = time.mktime(now.timetuple())
+		self.formPower['time_stamp']= self.formSource['time_stamp'] # fix
+		self.formSource['time_stamp']= self.formSource['time_stamp']
+		self.formSensors['time_stamp']= self.formSensors['time_stamp']
+		try:
+			rPower = requests.post(self.server+"/cgi/ipmi.cgi", data= self.formPower, cookies= self.cookies)
+			rSource = requests.post(self.server+"/cgi/ipmi.cgi", data= self.formSource, cookies= self.cookies)
+			rSensors = requests.post(self.server+"/cgi/ipmi.cgi", data= self.formSensors, cookies= self.cookies)
+			return self.processXML(rPower, rSource, rSensors)
+		except requests.exceptions.RequestException as e:
+			print "Connection error", e	
+
 	def processXML(self, rPower, rSource, rSensors):
 		data_now= {'font_n':0,'acInVoltage':0, 'acInCurrent':0, 'acInPower':0, 'dc12OutVoltage':0, 'dc12OutCurrent':0, 'dcOutPower':0, 'temp1':0, 'temp2':0}
 		sensor_now= {'Vcpu1':0, 'Vcpu2':0}
@@ -117,23 +134,6 @@ class IPMI:
 		self.data.append(mix.copy())
 		return mix.copy()	
 
-	def get_data(self):
-		if not self.conn:
-			print "Nao conectado"
-			return
-		now = datetime.datetime.now()
-		tstamp = time.mktime(now.timetuple())
-		self.formPower['time_stamp']= self.formSource['time_stamp'] # fix
-		self.formSource['time_stamp']= self.formSource['time_stamp']
-		self.formSensors['time_stamp']= self.formSensors['time_stamp']
-		try:
-			rPower = requests.post(self.server+"/cgi/ipmi.cgi", data= self.formPower, cookies= self.cookies)
-			rSource = requests.post(self.server+"/cgi/ipmi.cgi", data= self.formSource, cookies= self.cookies)
-			rSensors = requests.post(self.server+"/cgi/ipmi.cgi", data= self.formSensors, cookies= self.cookies)
-			return self.processXML(rPower, rSource, rSensors)
-		except requests.exceptions.RequestException as e:
-			print "Erro de conexao", e
-	
 	def clear_data(self):
 		self.data= []
 	
