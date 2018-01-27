@@ -20,13 +20,15 @@ def ToSigned(Num, signedbitB):
 		return Num;
 
 class IPMI:
-	def __init__(self, server):
+	def __init__(self, server, user, password):
 		self.server= server
 		self.formPower= {'POWER_CONSUMPTION.XML':'(0,0)', 'time_stamp':'', '_':''}
 		self.formSource= {'Get_PSInfoReadings.XML':'(0,0)', 'time_stamp':'', '_':''}
 		self.formSensors= {'SENSOR_INFO.XML':'(1,ff)', 'time_stamp':'', '_':''}
 		self.subpages= ['servh_psinfo', 'monitor_pw_comsumption']
 		self.cookies= {'langSetFlag':'0', 'language':'English', 'SID':'', 'mainpage':'health', 'subpage':self.subpages[1]}
+		self.user= user
+		self.password= password
 		
 		self.data= []
 		self.conn= False
@@ -35,14 +37,14 @@ class IPMI:
 
 	def login(self):
 		try:
-			login= requests.post(self.server+"/cgi/login.cgi", data= {'name':'admin', 'pwd':'admin'})
+			login= requests.post(self.server+"/cgi/login.cgi", data= {'name':self.user, 'pwd':self.password})
 			if 'SID' in login.cookies.get_dict().keys():
 				self.cookies['SID']= login.cookies.get_dict()['SID']
 				self.conn= True
 			else:
-				print "Nao foi possivel logar"
+				print "Cant login"
 		except requests.exceptions.RequestException as e:
-			print "Erro de conexao", e
+			print "Connection error", e
 	
 	def processXML(self, rPower, rSource, rSensors):
 		data_now= {'font_n':0,'acInVoltage':0, 'acInCurrent':0, 'acInPower':0, 'dc12OutVoltage':0, 'dc12OutCurrent':0, 'dcOutPower':0, 'temp1':0, 'temp2':0}
@@ -57,9 +59,7 @@ class IPMI:
 		for child in ipmiS:
 			for item in child:
 				ps= item.attrib
-				
-				if(cont == 3):
-					break
+
 				data_now['font_n']= cont
 				data_now['acInVoltage']= int(ps['acInVoltage'], 16)
 				data_now['acInCurrent']= int(ps['acInCurrent'], 16)/1000.0
@@ -152,22 +152,22 @@ class IPMI:
 		data= self.data[-1]
 		cont= 1
 		for font in data['sources']:
-			print "Fonte ", cont
-			print "AC entrada"
+			print "Source ", cont
+			print "AC input"
 			print str(font['acInVoltage'])+" V "+str(font['acInCurrent'])+" A "+str(font['acInPower'])+" W " 
 
-			print "DC saida" 
+			print "DC output" 
 			print str(font['dc12OutVoltage'])+" V "+str(font['dc12OutCurrent'])+" A "+str(font['dcOutPower'])+" W "
 
-			print "Temperatura 1 : "+str(font['temp1'])+" C "
-			print "Temperatura 2 : "+str(font['temp2'])+" C "
+			print "Temperature 1 : "+str(font['temp1'])+" C "
+			print "Temperature 2 : "+str(font['temp2'])+" C "
 
 			print "\n"
 			cont+=1
-		print "Tensao cpu1 ", data['sensor']['Vcpu1']
-		print "Tensao cpu2 ", data['sensor']['Vcpu2']
+		print "Voltage cpu1 ", data['sensor']['Vcpu1']
+		print "Voltage cpu2 ", data['sensor']['Vcpu2']
 		print "\n"
-		print "Potencia total"
+		print "Power"
 		for pw in data['power']:
 			print "Min "+str(pw['MIN'])+" W Media "+str(pw['AVR'])+" W Max "+str(pw['MAX'])+" W"
 
