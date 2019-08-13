@@ -2,7 +2,7 @@ import ipmi
 import time
 import os
 
-ipmi_sensor= ipmi.IPMI("http://localhost:8080", "admin", "admin")
+ipmi_sensor = ipmi.IPMI("http://localhost:8080", "admin", "admin")
 
 try:
 	while 1:
@@ -13,5 +13,4 @@ try:
 except KeyboardInterrupt:
 	ipmi_sensor.save_data("data")
 	ipmi_sensor.clear_data()
-	print "Saving"
-	
+	print("Saving")
