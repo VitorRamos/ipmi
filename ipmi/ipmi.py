@@ -38,7 +38,7 @@ class IPMI:
 
 	def login(self):
 		try:
-			login = requests.post(self.server+"/cgi/login.cgi", data={'name':self.user, 'pwd':self.password})
+			login = requests.post(self.server+"/cgi/login.cgi", data={'name':self.user, 'pwd':self.password}, proxies=self.proxies)
 			if 'SID' in login.cookies.get_dict().keys():
 				self.cookies['SID'] = login.cookies.get_dict()['SID']
 				self.conn = True
@@ -57,9 +57,9 @@ class IPMI:
 		self.formSource['time_stamp'] = self.formSource['time_stamp']
 		self.formSensors['time_stamp'] = self.formSensors['time_stamp']
 		try:
-			rPower = requests.post(self.server+"/cgi/ipmi.cgi", data=self.formPower, cookies=self.cookies)
-			rSource = requests.post(self.server+"/cgi/ipmi.cgi", data=self.formSource, cookies=self.cookies)
-			rSensors = requests.post(self.server+"/cgi/ipmi.cgi", data=self.formSensors, cookies=self.cookies)
+			rPower = requests.post(self.server+"/cgi/ipmi.cgi", data=self.formPower, cookies=self.cookies, proxies=self.proxies)
+			rSource = requests.post(self.server+"/cgi/ipmi.cgi", data=self.formSource, cookies=self.cookies, proxies=self.proxies)
+			rSensors = requests.post(self.server+"/cgi/ipmi.cgi", data=self.formSensors, cookies=self.cookies, proxies=self.proxies)
 			return self.processXML(rPower, rSource, rSensors)
 		except requests.exceptions.RequestException as e:
 			print("Connection error", e)

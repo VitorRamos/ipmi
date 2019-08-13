@@ -2,7 +2,7 @@ import ipmi
 import time
 import os
 
-ipmi_sensor = ipmi.IPMI("http://localhost:8080", "admin", "admin")
+ipmi_sensor = ipmi.IPMI("http://service3-bmc", "admin", "admin", {"http":"socks5h://admin:1080"})
 
 try:
 	while 1:
