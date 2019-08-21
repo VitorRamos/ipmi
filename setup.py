@@ -13,9 +13,7 @@ setup(name='ipmi',
       license='MIT',
       packages=['ipmi'],
       install_requires=[
-          'requests',
-          'xml',
-          'pickle'
+          'requests'
       ],
       long_description=read('README.rst'),
       classifiers=[
