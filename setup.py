@@ -5,7 +5,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(name='netipmi',
-      version='0.1.0',
+      version='0.1.1',
       description='IPMI energy measuments tool',
       url='https://github.com/VitorRamos/cpufreq',
       author='Vitor Ramos, Alex Furtunato',
