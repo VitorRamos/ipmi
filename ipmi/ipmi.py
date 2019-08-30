@@ -17,7 +17,7 @@ def ToSigned(Num, signedbitB):
         return Num
 
 class IPMI:
-    def __init__(self, server, user="admin", password="admin"):
+    def __init__(self, server, user="admin", password="admin", proxy=None):
         self.server = server
         self.formPower = {"POWER_CONSUMPTION.XML":"(0,0)", "time_stamp":"","_":""}
         self.formSource = {"Get_PSInfoReadings.XML":"(0,0)","time_stamp":"","_":""}
@@ -25,7 +25,7 @@ class IPMI:
         self.subpages = ["servh_psinfo","monitor_pw_comsumption"]
         self.cookies = {"langSetFlag":"0","language":"English","SID":"",
                         "mainpage":"health","subpage":self.subpages[1]}
-        
+        self.proxy= proxy
         self.conn = False
         self.user = user
         self.password = password
@@ -35,7 +35,8 @@ class IPMI:
     def login(self):
         try:
             login = requests.post(self.server+"/cgi/login.cgi",
-                    data = {"name":self.user,"pwd":self.password})
+                    data = {"name":self.user,"pwd":self.password},
+                    proxies= self.proxy)
 
             if "SID" in login.cookies.get_dict().keys():
                 self.cookies["SID"] = login.cookies.get_dict()["SID"]
@@ -56,11 +57,11 @@ class IPMI:
         self.formSensors["time_stamp"] = tstamp
         try:
             rPower = requests.post(self.server+"/cgi/ipmi.cgi", data= self.formPower, 
-                                    cookies=self.cookies)
+                                    cookies=self.cookies, proxies= self.proxy)
             rSource = requests.post(self.server+"/cgi/ipmi.cgi", data= self.formSource, 
-                                    cookies=self.cookies)
+                                    cookies=self.cookies, proxies= self.proxy)
             rSensors = requests.post(self.server+"/cgi/ipmi.cgi", data= self.formSensors, 
-                                    cookies=self.cookies)
+                                    cookies=self.cookies, proxies= self.proxy)
         except requests.exceptions.RequestException as e:
             print("Connection error", e)
 
