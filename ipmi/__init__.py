@@ -1,1 +1,1 @@
-from ipmi import IPMI
+from .ipmi import IPMI

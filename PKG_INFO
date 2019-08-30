@@ -1,0 +1,15 @@
+Metadata-Version: 0.1
+Name: ipmi
+Version: 0.1
+Summary: An tool to read energy sensor using IPMI.
+Home-page: https://github.com/VitorRamos/ipmi
+Author: Vitor Ramos
+Author-email: ramos.vitor89@gmail.com
+License: MIT
+Description: Description...
+
+Keywords: example documentation tutorial
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Topic :: Utilities
+Classifier: License :: MIT License
