@@ -4,7 +4,7 @@ from setuptools import setup
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
-setup(name='ipmi',
+setup(name='netipmi',
       version='0.1.0',
       description='IPMI energy measuments tool',
       url='https://github.com/VitorRamos/cpufreq',

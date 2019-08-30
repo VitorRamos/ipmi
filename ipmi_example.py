@@ -1,6 +1,5 @@
 import ipmi
 import time
-import os
 
 ipmi_sensor = ipmi.IPMI(server="http://localhost:8080", user="admin", password="admin", proxy={"http":"socks5h://admin:1080"})
 
